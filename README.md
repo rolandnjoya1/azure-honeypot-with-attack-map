@@ -1,1 +1,148 @@
 # azure-honeypot-with-attack-map
+
+Setup Azure Subscription
+
+Create Free Azure Subscription: https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account
+
+If Azure doesn’t let you create a free account, you can either
+Create a paid subscription and be mindful of shutting down/deleting your resources when you are done.
+
+After your subscription is created, you can login at:
+https://portal.azure.com
+
+
+Create the Honey Pot (Azure Virtual Machine)
+
+Go to: https://portal.azure.com and search for virtual machines
+
+Create a new Windows 10 virtual machine (choose an appropriate size so that you can smoothly navigate your VM). 
+
+Choose the Standard E2s v3 (2 vcpus, 16 GiB memory)
+
+Go to the Network Security Group for your virtual machine and create a rule that allows all traffic inbound. Disregard the warnings.
+
+Log into your virtual machine and turn off the windows firewall (start -> wf.msc -> properties -> all off) you can use RDP if on windows. However, on Mac you will need to download the “Windows App”. You will need to add your VM’s Public IP when selecting Add PC in the Windows App.
+
+
+
+
+
+
+Next we will log into our VM and then turn off the firewall by searching for windows defender and selecting turn off firewall. Then Log out of the VM.
+
+
+
+Logging into the VM and inspecting logs
+
+Fail 3 logins as some other username
+Login to your virtual machine
+Open up “Event Viewer” by searching for “Event Viewer” and inspect the security logs
+Select “Windows Logs” on the left panel then Select “Find” on the right panel
+Search for 4625
+See the 3 failed logins as “<Failed Login User>”, event ID 4625
+Next, we are going to create a central log repository called a LAW
+
+
+Log Forwarding and KQL
+
+Create Log Analytics Workspace by searching “Log Analytics Workspace”
+Create a Sentinel Instance and connect it to Log Analytics
+Configure the “Windows Security Events via AMA” connector.
+
+Create the DCR within sentinel, watch for extension creation.
+Query for logs within the LAW.
+We can now query the Log analytics workspace as well as the SIEM, sentinel directly, which we will do soon.
+
+
+
+Observe some of your VM logs:
+
+SecurityEvent
+| where EventId == 4625
+
+
+
+
+
+Log Enrichment and Finding Location Data
+
+Observe the SecurityEvent logs in the Log Analytics Workspace; there is no location data, only IP address, which we can use to derive the location data.
+
+
+
+
+We are going to import a spreadsheet (as a “Sentinel Watchlist”) which contains geographic information for each block of IP addresses.
+
+Download: geoip-summarized.csv 
+
+Within Sentinel, create the watchlist:
+
+Name/Alias: geoip
+Source type: Local File
+Number of lines before row: 0
+Search Key: network
+
+Allow the watchlist to fully import, there should be a total of roughly 54,000 rows.
+
+In real life, this location data would come from a live source or it would be updated automatically on the back end by your service provider.
+
+Observe the logs now have geographic information, so you can see where the attacks are coming from
+
+let GeoIPDB_FULL = _GetWatchlist("geoip");
+let WindowsEvents = SecurityEvent
+    | where IpAddress == <attacker IP address>
+    | where EventID == 4625
+    | order by TimeGenerated desc
+    | evaluate ipv4_lookup(GeoIPDB_FULL, IpAddress, network);
+WindowsEvents
+
+
+
+Attack Map Creation
+
+Within Sentinel, create a new Workbook
+
+Delete the prepopulated elements and add a “Query” element
+
+Go to the advanced editor tab, and paste the JSON
+
+{
+	"type": 3,
+	"content": {
+	"version": "KqlItem/1.0",
+	"query": "let GeoIPDB_FULL = _GetWatchlist(\"geoip\");\nlet WindowsEvents = SecurityEvent;\nWindowsEvents | where EventID == 4625\n| order by TimeGenerated desc\n| evaluate ipv4_lookup(GeoIPDB_FULL, IpAddress, network)\n| summarize FailureCount = count() by IpAddress, latitude, longitude, cityname, countryname\n| project FailureCount, AttackerIp = IpAddress, latitude, longitude, city = cityname, country = countryname,\nfriendly_location = strcat(cityname, \" (\", countryname, \")\");",
+	"size": 3,
+	"timeContext": {
+		"durationMs": 2592000000
+	},
+	"queryType": 0,
+	"resourceType": "microsoft.operationalinsights/workspaces",
+	"visualization": "map",
+	"mapSettings": {
+		"locInfo": "LatLong",
+		"locInfoColumn": "countryname",
+		"latitude": "latitude",
+		"longitude": "longitude",
+		"sizeSettings": "FailureCount",
+		"sizeAggregation": "Sum",
+		"opacity": 0.8,
+		"labelSettings": "friendly_location",
+		"legendMetric": "FailureCount",
+		"legendAggregation": "Sum",
+		"itemColorSettings": {
+		"nodeColorField": "FailureCount",
+		"colorAggregation": "Sum",
+		"type": "heatmap",
+		"heatmapPalette": "greenRed"
+		}
+	}
+	},
+	"name": "query - 0"
+}
+
+I would recommend waiting anywhere from 12 to 24 horse so that your VM can have malicious traffic flow to it. This will produce additional points of interest on your attack map.
+
+
+
+Next we are going to configure automated incident creation and alerts for the 4625 event
+
