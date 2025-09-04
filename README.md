@@ -146,3 +146,15 @@ I would recommend waiting anywhere from 12 to 24 horse so that your VM can have 
 
 Next we are going to configure automated incident creation and alerts for the 4625 event
 
+
+<img width="356" height="410" alt="Image" src="https://github.com/user-attachments/assets/58c16df2-aefa-48fd-8d8a-122c5ded5b81" />
+
+<img width="498" height="133" alt="Image" src="https://github.com/user-attachments/assets/90d8b9bc-8f07-42fe-86f2-f3a7d028534a" />
+<img width="500" height="241" alt="Image" src="https://github.com/user-attachments/assets/56737ffe-7337-4a27-97dd-fb3d8fae3877" />
+<img width="504" height="241" alt="Image" src="https://github.com/user-attachments/assets/d7bfb4d9-4640-4c29-98c9-45b8a68d085f" />
+<img width="503" height="228" alt="Image" src="https://github.com/user-attachments/assets/a20ec640-ee05-4f10-84f0-4dbef16140cf" />
+<img width="503" height="466" alt="Image" src="https://github.com/user-attachments/assets/13b8fddd-e84d-4f1e-8bf2-f7b7311c9985" />
+<img width="493" height="425" alt="Image" src="https://github.com/user-attachments/assets/60f293f2-3d4b-444f-8c08-2aad39c89df7" />
+<img width="360" height="177" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
+
+
