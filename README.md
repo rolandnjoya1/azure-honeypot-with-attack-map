@@ -1,6 +1,6 @@
 # azure-honeypot-with-attack-map
 
-<img width="360" height="177" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
+<img width="600" height="400" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
 
 Overview
 ...
@@ -162,7 +162,7 @@ WindowsEvents
 
 I would recommend waiting anywhere from 12 to 24 horse so that your VM can have malicious traffic flow to it. This will produce additional points of interest on your attack map.
 
-<img width="360" height="177" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
+<img width="600" height="400" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
 
 
 
