@@ -3,24 +3,22 @@
 <img width="600" height="400" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
 
 Overview
+
 This project sets up a honeypot in Azure and integrates it with Microsoft Sentinel to capture and visualize malicious login attempts. A Windows VM is deliberately exposed to attract attackers, and failed logins (Event ID 4625) are forwarded to a Log Analytics Workspace. Using KQL queries, logs are enriched with geographic data from a GeoIP watchlist, then visualized in Sentinel with a real-time Attack Map. This project provides real-world threat intelligence by showing attacker origins, Demonstrates SIEM integration and log enrichment with Sentinel.
 
 
 
-##Tools & Techniques
+Tools & Techniques
 
-Azure VM (Windows 10) as honeypot
+*Azure VM (Windows 10) as honeypot
 
-Log Analytics Workspace + Sentinel SIEM
+*Log Analytics Workspace + Sentinel SIEM
 
-KQL for querying failed logins
+*KQL for querying failed logins
 
-GeoIP watchlist enrichment
+*GeoIP watchlist enrichment
 
-Sentinel Workbooks for visualization
-
-##Business Value
-
+*Sentinel Workbooks for visualization
 
 
 
