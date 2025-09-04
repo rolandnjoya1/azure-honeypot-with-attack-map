@@ -1,4 +1,4 @@
-# azure-honeypot-with-attack-map
+# azure-honeypot-with-attack-map-with-threat-analytics
 
 <img width="600" height="400" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
 
