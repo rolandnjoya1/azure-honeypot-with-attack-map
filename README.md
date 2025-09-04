@@ -70,7 +70,7 @@ We can now query the Log analytics workspace as well as the SIEM, sentinel direc
 
 
 
-Observe some of your VM logs:
+Observe some of your VM logs using query 1 in sentinal-quries.txt:
 
 SecurityEvent
  | where EventId == 4625
@@ -91,20 +91,24 @@ goto what is my ip address to review highlighted attacker ip information
 
 We are going to import a spreadsheet (as a “Sentinel Watchlist”) which contains geographic information for each block of IP addresses.
 
-# Download: geoip-summarized.csv 
+# Download: location-config.csv 
 
 Within Sentinel, create the watchlist:
 
-Name/Alias: geoip
-Source type: Local File
-Number of lines before row: 0
-Search Key: network
+*Name/Alias: geoip
+
+*Source type: Local File
+
+*Number of lines before row: 0
+
+*Search Key: network
+
 
 Allow the watchlist to fully import, there should be a total of roughly 54,000 rows.
 
 In real life, this location data would come from a live source or it would be updated automatically on the back end by your service provider.
 
-Observe the logs now have geographic information, so you can see where the attacks are coming from
+Observe the logs now have geographic information, so you can see where the attacks are coming from using query 2 in sentinal-queries.txt
 
 let GeoIPDB_FULL = _GetWatchlist("geoip");
 let WindowsEvents = SecurityEvent
@@ -122,41 +126,8 @@ WindowsEvents
 
 2. Delete the prepopulated elements and add a “Query” element
 
-3. Go to the advanced editor tab, and paste the JSON
+3. Go to the advanced editor tab, and paste the JSON in map-config.json
 
-{
-	"type": 3,
-	"content": {
-	"version": "KqlItem/1.0",
-	"query": "let GeoIPDB_FULL = _GetWatchlist(\"geoip\");\nlet WindowsEvents = SecurityEvent;\nWindowsEvents | where EventID == 4625\n| order by TimeGenerated desc\n| evaluate ipv4_lookup(GeoIPDB_FULL, IpAddress, network)\n| summarize FailureCount = count() by IpAddress, latitude, longitude, cityname, countryname\n| project FailureCount, AttackerIp = IpAddress, latitude, longitude, city = cityname, country = countryname,\nfriendly_location = strcat(cityname, \" (\", countryname, \")\");",
-	"size": 3,
-	"timeContext": {
-		"durationMs": 2592000000
-	},
-	"queryType": 0,
-	"resourceType": "microsoft.operationalinsights/workspaces",
-	"visualization": "map",
-	"mapSettings": {
-		"locInfo": "LatLong",
-		"locInfoColumn": "countryname",
-		"latitude": "latitude",
-		"longitude": "longitude",
-		"sizeSettings": "FailureCount",
-		"sizeAggregation": "Sum",
-		"opacity": 0.8,
-		"labelSettings": "friendly_location",
-		"legendMetric": "FailureCount",
-		"legendAggregation": "Sum",
-		"itemColorSettings": {
-		"nodeColorField": "FailureCount",
-		"colorAggregation": "Sum",
-		"type": "heatmap",
-		"heatmapPalette": "greenRed"
-		}
-	}
-	},
-	"name": "query - 0"
-}
 
 I would recommend waiting anywhere from 12 to 24 horse so that your VM can have malicious traffic flow to it. This will produce additional points of interest on your attack map.
 
