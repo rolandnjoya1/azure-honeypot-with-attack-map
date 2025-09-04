@@ -1,5 +1,12 @@
 # azure-honeypot-with-attack-map
 
+<img width="360" height="177" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
+
+Overview
+...
+
+# Instructions 
+
 Setup Azure Subscription
 
 Create Free Azure Subscription: https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account
@@ -32,6 +39,8 @@ https://portal.azure.com
 
 6. Next we will log into our VM and then turn off the firewall by searching for windows defender and selecting turn off firewall. Then Log out of the VM.
 
+<img width="500" height="241" alt="Image" src="https://github.com/user-attachments/assets/56737ffe-7337-4a27-97dd-fb3d8fae3877" />
+
 
 # Logging into the VM and inspecting logs
 
@@ -43,7 +52,7 @@ https://portal.azure.com
 6. See the 3 failed logins as “<Failed Login User>”, event ID 4625
 7. Next, we are going to create a central log repository called a LAW
 
-<img width="500" height="241" alt="Image" src="https://github.com/user-attachments/assets/56737ffe-7337-4a27-97dd-fb3d8fae3877" />
+<img width="504" height="241" alt="Image" src="https://github.com/user-attachments/assets/d7bfb4d9-4640-4c29-98c9-45b8a68d085f" />
 
 
 # Log Forwarding and KQL
@@ -52,7 +61,7 @@ Create Log Analytics Workspace by searching “Log Analytics Workspace”
 Create a Sentinel Instance and connect it to Log Analytics
 Configure the “Windows Security Events via AMA” connector.
 
-<img width="504" height="241" alt="Image" src="https://github.com/user-attachments/assets/d7bfb4d9-4640-4c29-98c9-45b8a68d085f" />
+<img width="503" height="228" alt="Image" src="https://github.com/user-attachments/assets/a20ec640-ee05-4f10-84f0-4dbef16140cf" />
 
 
 Create the DCR within sentinel, watch for extension creation.
@@ -74,11 +83,12 @@ SecurityEvent
 
 Observe the SecurityEvent logs in the Log Analytics Workspace; there is no location data, only IP address, which we can use to derive the location data.
 
-<img width="503" height="228" alt="Image" src="https://github.com/user-attachments/assets/a20ec640-ee05-4f10-84f0-4dbef16140cf" />
+<img width="503" height="466" alt="Image" src="https://github.com/user-attachments/assets/13b8fddd-e84d-4f1e-8bf2-f7b7311c9985" />
 
 
 goto what is my ip address to review highlighted attacker ip information
-<img width="503" height="466" alt="Image" src="https://github.com/user-attachments/assets/13b8fddd-e84d-4f1e-8bf2-f7b7311c9985" />
+
+<img width="493" height="425" alt="Image" src="https://github.com/user-attachments/assets/60f293f2-3d4b-444f-8c08-2aad39c89df7" />
 
 
 We are going to import a spreadsheet (as a “Sentinel Watchlist”) which contains geographic information for each block of IP addresses.
@@ -158,6 +168,5 @@ I would recommend waiting anywhere from 12 to 24 horse so that your VM can have 
 
 
 
-<img width="493" height="425" alt="Image" src="https://github.com/user-attachments/assets/60f293f2-3d4b-444f-8c08-2aad39c89df7" />
 
 
