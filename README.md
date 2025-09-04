@@ -11,43 +11,49 @@ After your subscription is created, you can login at:
 https://portal.azure.com
 
 
-Create the Honey Pot (Azure Virtual Machine)
+# Create the Honey Pot (Azure Virtual Machine)
 
-Go to: https://portal.azure.com and search for virtual machines
+1. Go to: https://portal.azure.com and search for virtual machines
 
-Create a new Windows 10 virtual machine (choose an appropriate size so that you can smoothly navigate your VM). 
+2. Create a new Windows 10 virtual machine (choose an appropriate size so that you can smoothly navigate your VM). 
 
-Choose the Standard E2s v3 (2 vcpus, 16 GiB memory)
+3. Choose the Standard E2s v3 (2 vcpus, 16 GiB memory)
 
-Go to the Network Security Group for your virtual machine and create a rule that allows all traffic inbound. Disregard the warnings.
+4. Go to the Network Security Group for your virtual machine and create a rule that allows all traffic inbound. Disregard the warnings.
 
-Log into your virtual machine and turn off the windows firewall (start -> wf.msc -> properties -> all off) you can use RDP if on windows. However, on Mac you will need to download the “Windows App”. You will need to add your VM’s Public IP when selecting Add PC in the Windows App.
-
-
+5. Log into your virtual machine and turn off the windows firewall (start -> wf.msc -> properties -> all off) you can use RDP if on windows. However, on Mac you will need to download the “Windows App”. You will need to add your VM’s Public IP when selecting Add PC in the Windows App.
 
 
-
-
-Next we will log into our VM and then turn off the firewall by searching for windows defender and selecting turn off firewall. Then Log out of the VM.
+<img width="356" height="410" alt="Image" src="https://github.com/user-attachments/assets/58c16df2-aefa-48fd-8d8a-122c5ded5b81" />
+<img width="498" height="133" alt="Image" src="https://github.com/user-attachments/assets/90d8b9bc-8f07-42fe-86f2-f3a7d028534a" />
 
 
 
-Logging into the VM and inspecting logs
 
-Fail 3 logins as some other username
-Login to your virtual machine
-Open up “Event Viewer” by searching for “Event Viewer” and inspect the security logs
-Select “Windows Logs” on the left panel then Select “Find” on the right panel
-Search for 4625
-See the 3 failed logins as “<Failed Login User>”, event ID 4625
-Next, we are going to create a central log repository called a LAW
+6. Next we will log into our VM and then turn off the firewall by searching for windows defender and selecting turn off firewall. Then Log out of the VM.
 
 
-Log Forwarding and KQL
+# Logging into the VM and inspecting logs
+
+1. Fail 3 logins as some other username
+2. Login to your virtual machine
+3. Open up “Event Viewer” by searching for “Event Viewer” and inspect the security logs
+4. Select “Windows Logs” on the left panel then Select “Find” on the right panel
+5. Search for 4625
+6. See the 3 failed logins as “<Failed Login User>”, event ID 4625
+7. Next, we are going to create a central log repository called a LAW
+
+<img width="500" height="241" alt="Image" src="https://github.com/user-attachments/assets/56737ffe-7337-4a27-97dd-fb3d8fae3877" />
+
+
+# Log Forwarding and KQL
 
 Create Log Analytics Workspace by searching “Log Analytics Workspace”
 Create a Sentinel Instance and connect it to Log Analytics
 Configure the “Windows Security Events via AMA” connector.
+
+<img width="504" height="241" alt="Image" src="https://github.com/user-attachments/assets/d7bfb4d9-4640-4c29-98c9-45b8a68d085f" />
+
 
 Create the DCR within sentinel, watch for extension creation.
 Query for logs within the LAW.
@@ -64,16 +70,20 @@ SecurityEvent
 
 
 
-Log Enrichment and Finding Location Data
+# Log Enrichment and Finding Location Data
 
 Observe the SecurityEvent logs in the Log Analytics Workspace; there is no location data, only IP address, which we can use to derive the location data.
 
+<img width="503" height="228" alt="Image" src="https://github.com/user-attachments/assets/a20ec640-ee05-4f10-84f0-4dbef16140cf" />
 
+
+goto what is my ip address to review highlighted attacker ip information
+<img width="503" height="466" alt="Image" src="https://github.com/user-attachments/assets/13b8fddd-e84d-4f1e-8bf2-f7b7311c9985" />
 
 
 We are going to import a spreadsheet (as a “Sentinel Watchlist”) which contains geographic information for each block of IP addresses.
 
-Download: geoip-summarized.csv 
+# Download: geoip-summarized.csv 
 
 Within Sentinel, create the watchlist:
 
@@ -98,13 +108,13 @@ WindowsEvents
 
 
 
-Attack Map Creation
+# Attack Map Creation
 
-Within Sentinel, create a new Workbook
+1. Within Sentinel, create a new Workbook
 
-Delete the prepopulated elements and add a “Query” element
+2. Delete the prepopulated elements and add a “Query” element
 
-Go to the advanced editor tab, and paste the JSON
+3. Go to the advanced editor tab, and paste the JSON
 
 {
 	"type": 3,
@@ -142,19 +152,12 @@ Go to the advanced editor tab, and paste the JSON
 
 I would recommend waiting anywhere from 12 to 24 horse so that your VM can have malicious traffic flow to it. This will produce additional points of interest on your attack map.
 
-
-
-Next we are going to configure automated incident creation and alerts for the 4625 event
-
-
-<img width="356" height="410" alt="Image" src="https://github.com/user-attachments/assets/58c16df2-aefa-48fd-8d8a-122c5ded5b81" />
-
-<img width="498" height="133" alt="Image" src="https://github.com/user-attachments/assets/90d8b9bc-8f07-42fe-86f2-f3a7d028534a" />
-<img width="500" height="241" alt="Image" src="https://github.com/user-attachments/assets/56737ffe-7337-4a27-97dd-fb3d8fae3877" />
-<img width="504" height="241" alt="Image" src="https://github.com/user-attachments/assets/d7bfb4d9-4640-4c29-98c9-45b8a68d085f" />
-<img width="503" height="228" alt="Image" src="https://github.com/user-attachments/assets/a20ec640-ee05-4f10-84f0-4dbef16140cf" />
-<img width="503" height="466" alt="Image" src="https://github.com/user-attachments/assets/13b8fddd-e84d-4f1e-8bf2-f7b7311c9985" />
-<img width="493" height="425" alt="Image" src="https://github.com/user-attachments/assets/60f293f2-3d4b-444f-8c08-2aad39c89df7" />
 <img width="360" height="177" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
+
+
+
+
+
+<img width="493" height="425" alt="Image" src="https://github.com/user-attachments/assets/60f293f2-3d4b-444f-8c08-2aad39c89df7" />
 
 
