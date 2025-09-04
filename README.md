@@ -3,18 +3,37 @@
 <img width="600" height="400" alt="Image" src="https://github.com/user-attachments/assets/410471d8-00d8-47c9-bc79-176fc810ec07" />
 
 Overview
-...
+This project sets up a honeypot in Azure and integrates it with Microsoft Sentinel to capture and visualize malicious login attempts. A Windows VM is deliberately exposed to attract attackers, and failed logins (Event ID 4625) are forwarded to a Log Analytics Workspace. Using KQL queries, logs are enriched with geographic data from a GeoIP watchlist, then visualized in Sentinel with a real-time Attack Map. This project provides real-world threat intelligence by showing attacker origins, Demonstrates SIEM integration and log enrichment with Sentinel.
+
+
+
+##Tools & Techniques
+
+Azure VM (Windows 10) as honeypot
+
+Log Analytics Workspace + Sentinel SIEM
+
+KQL for querying failed logins
+
+GeoIP watchlist enrichment
+
+Sentinel Workbooks for visualization
+
+##Business Value
+
+
+
 
 # Instructions 
 
-Setup Azure Subscription
+1. Setup Azure Subscription
 
-Create Free Azure Subscription: https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account
+2. Create Free Azure Subscription: https://azure.microsoft.com/en-us/pricing/purchase-options/azure-account
 
-If Azure doesn’t let you create a free account, you can either
+3. If Azure doesn’t let you create a free account, you can either
 Create a paid subscription and be mindful of shutting down/deleting your resources when you are done.
 
-After your subscription is created, you can login at:
+4. After your subscription is created, you can login at:
 https://portal.azure.com
 
 
@@ -57,20 +76,20 @@ https://portal.azure.com
 
 # Log Forwarding and KQL
 
-Create Log Analytics Workspace by searching “Log Analytics Workspace”
-Create a Sentinel Instance and connect it to Log Analytics
-Configure the “Windows Security Events via AMA” connector.
+1. Create Log Analytics Workspace by searching “Log Analytics Workspace”
+2. Create a Sentinel Instance and connect it to Log Analytics
+3. Configure the “Windows Security Events via AMA” connector.
 
 <img width="503" height="228" alt="Image" src="https://github.com/user-attachments/assets/a20ec640-ee05-4f10-84f0-4dbef16140cf" />
 
 
-Create the DCR within sentinel, watch for extension creation.
-Query for logs within the LAW.
-We can now query the Log analytics workspace as well as the SIEM, sentinel directly, which we will do soon.
+4. Create the DCR within sentinel, watch for extension creation.
+5. Query for logs within the LAW.
+6. We can now query the Log analytics workspace as well as the SIEM, sentinel directly, which we will do soon.
 
 
 
-Observe some of your VM logs using query 1 in sentinal-quries.txt:
+7. Observe some of your VM logs using query 1 in sentinal-quries.txt:
 
 SecurityEvent
  | where EventId == 4625
@@ -79,21 +98,21 @@ SecurityEvent
 
 # Log Enrichment and Finding Location Data
 
-Observe the SecurityEvent logs in the Log Analytics Workspace; there is no location data, only IP address, which we can use to derive the location data.
+1. Observe the SecurityEvent logs in the Log Analytics Workspace; there is no location data, only IP address, which we can use to derive the location data.
 
 <img width="503" height="466" alt="Image" src="https://github.com/user-attachments/assets/13b8fddd-e84d-4f1e-8bf2-f7b7311c9985" />
 
 
-goto what is my ip address to review highlighted attacker ip information
+2. Go to what is my ip address to review highlighted attacker ip information
 
 <img width="493" height="425" alt="Image" src="https://github.com/user-attachments/assets/60f293f2-3d4b-444f-8c08-2aad39c89df7" />
 
 
-We are going to import a spreadsheet (as a “Sentinel Watchlist”) which contains geographic information for each block of IP addresses.
+3. We are going to import a spreadsheet (as a “Sentinel Watchlist”) which contains geographic information for each block of IP addresses.
 
-# Download: location-config.csv 
+4. Download: location-config.csv 
 
-Within Sentinel, create the watchlist:
+5. Within Sentinel, create the watchlist:
 
 *Name/Alias: geoip
 
@@ -104,11 +123,11 @@ Within Sentinel, create the watchlist:
 *Search Key: network
 
 
-Allow the watchlist to fully import, there should be a total of roughly 54,000 rows.
+6. Allow the watchlist to fully import, there should be a total of roughly 54,000 rows.
 
-In real life, this location data would come from a live source or it would be updated automatically on the back end by your service provider.
+7. In real life, this location data would come from a live source or it would be updated automatically on the back end by your service provider.
 
-Observe the logs now have geographic information, so you can see where the attacks are coming from using query 2 in sentinal-queries.txt
+8. Observe the logs now have geographic information, so you can see where the attacks are coming from using query 2 in sentinal-queries.txt
 
 let GeoIPDB_FULL = _GetWatchlist("geoip");
 let WindowsEvents = SecurityEvent
