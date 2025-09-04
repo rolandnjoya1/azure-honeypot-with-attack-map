@@ -73,9 +73,7 @@ We can now query the Log analytics workspace as well as the SIEM, sentinel direc
 Observe some of your VM logs:
 
 SecurityEvent
-| where EventId == 4625
-
-
+ | where EventId == 4625
 
 
 
